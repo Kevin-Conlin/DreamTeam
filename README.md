@@ -7,7 +7,7 @@ Project Outline:
 3) Analyze NASDAQ data of a number of companies whose CEOs do not have a prolific twitter presence to establish a baseline.
 
 
-
+Technologies Used:
 - Apache Spark
 - Spark SQL
 - YARN
