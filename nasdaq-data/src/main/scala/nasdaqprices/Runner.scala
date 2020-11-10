@@ -11,13 +11,16 @@ object Runner {
         val sc = new SparkContext(conf)
         val inputNasdaqData = "TeslaNasdaqPrices.csv"
 
-        //format .csv with desirable order and remove "volume" column
-        val splitRecords = sc.textFile(inputNasdaqData)
-            .map(_.split(","))
-        val orderFields = splitRecords.map(arr => (arr(0), arr(3), arr(4), arr(5), arr(1)))
+        formatNasdaq(sc, inputNasdaqData)
+        
+        def formatNasdaq(context: SparkContext, file: String) = {
+            //format .csv with desirable order and remove "volume" column
+            val splitRecords = sc.textFile(file)
+                .map(_.split(","))
+            val orderFields = splitRecords.map(arr => (arr(0), arr(3), arr(4), arr(5), arr(1)))
 
             orderFields.take(10).foreach(println)
-
+        }
     }
 
 
