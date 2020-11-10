@@ -1,5 +1,5 @@
 # DreamTeam
-This Repository contains all of the source code used in Project 2 for the following group: Kevin Conlin, John Rice, Roger Griffin, Samuel Owens, and Ernie Chu.
+This Repository contains all of the source code used in Project 2 for Group 3: Kevin Conlin, John Rice, Roger Griffin, Samuel Owens, and Ernie Chu.
 
 Project Outline:
 1) Create a Spark Application that processes Twitter data for the accounts of the following individuals: Elon Musk, Jeff Bezos, Tim Cook, Jack Dorsey, and Elizabeth Holmes.
