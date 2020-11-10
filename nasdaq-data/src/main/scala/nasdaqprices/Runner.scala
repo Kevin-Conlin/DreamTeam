@@ -13,9 +13,11 @@ object Runner {
 
         //remove comma from .csv and format
         val splitRecords = sc.textFile(inputNasdaqData)
-            .map(_.split("[,]").mkString)
-            .take(10)
-            .foreach(println)
+            .map(_.split(","))
+        val orderFields = splitRecords.map(arr => (arr(0), arr(3), arr(4), arr(5), arr(1)))
+
+            orderFields.take(10).foreach(println)
+
     }
 
 
