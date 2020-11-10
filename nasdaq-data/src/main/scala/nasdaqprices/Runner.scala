@@ -11,7 +11,7 @@ object Runner {
         val sc = new SparkContext(conf)
         val inputNasdaqData = "TeslaNasdaqPrices.csv"
 
-        //remove comma from .csv and format
+        //format .csv with desirable order and remove "volume" column
         val splitRecords = sc.textFile(inputNasdaqData)
             .map(_.split(","))
         val orderFields = splitRecords.map(arr => (arr(0), arr(3), arr(4), arr(5), arr(1)))
