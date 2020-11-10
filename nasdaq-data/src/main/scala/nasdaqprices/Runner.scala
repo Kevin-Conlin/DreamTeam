@@ -11,8 +11,9 @@ object Runner {
         val sc = new SparkContext(conf)
         val inputNasdaqData = "TeslaNasdaqPrices.csv"
 
+        //remove comma from .csv and format
         val splitRecords = sc.textFile(inputNasdaqData)
-            .map(_.split(",").mkString)
+            .map(_.split("[,]").mkString)
             .take(10)
             .foreach(println)
     }
