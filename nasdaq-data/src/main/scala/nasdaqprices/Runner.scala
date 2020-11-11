@@ -1,7 +1,7 @@
 package nasdaqprices
 import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.rdd._
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SparkSession, functions}
+
 
 object Runner {
     def main (args: Array[String]) = {
@@ -41,15 +41,23 @@ object Runner {
 
             splitJSON.take(10).foreach(println)
 
-            //prints dataframe of .csv file in a Spark SQL table
+            // below continues Spark SQL/Dataframe testing
+            // prints dataframe of .csv file in a Spark SQL table
+            import spark.implicits._
             val df = spark.read.json(inputJSONData)
             //df.select("created_at", "retweet_count", "favorite_count").show()
             df.createOrReplaceTempView("tweets")
-            val df2 = spark.sql("SELECT created_at AS Time, retweet_count AS Retweets, favorite_count AS Favorites, " +
-                "(retweet_count / favorite_count) AS Fraction FROM tweets")
+            val df2 = spark.sql(
+                "SELECT unix_timestamp(created_at) AS Time, retweet_count AS Retweets, favorite_count AS Favorites, " +
+                "ROUND(((retweet_count / favorite_count)*100),2) AS Percentage FROM tweets")
+
             df2.show()
 
+            //testing for date conversion
+            df2.select(functions.map(
         }
     }
 
 }
+
+E
