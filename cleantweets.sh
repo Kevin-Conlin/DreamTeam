@@ -11,5 +11,5 @@ do
     TEXT=`jshon -e data < $INPUT | jshon -e $i -e text`
     RETWEETS=`jshon -e data < $INPUT | jshon -e $i jshon -e public_metrics -e retweet_count`
     FAVORITES=`jshon -e data < $INPUT | jshon -e $i jshon -e public_metrics -e like_count`
-    echo "$DATE,$ID,$TEXT,$RETWEETS,$FAVORITES" >> $OUTPUT
+    echo "$ID,$DATE,$RETWEETS,$FAVORITES,$TEXT" >> $OUTPUT
 done
