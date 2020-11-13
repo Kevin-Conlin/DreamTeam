@@ -28,27 +28,90 @@ object sqlDriver {
     import spark.implicits._;
     val dateWindow = Window.orderBy("date");
     spark.read.option("header", "true").csv(infile)
+      //  daily differences
       .withColumn("open_difference_daily",
-        round($"open" - when(lag("open", 1).over(dateWindow).isNull, 0).otherwise(lag("open", 1).over(dateWindow)), 4))
+        round($"open" - when(lag("open", 1).over(dateWindow).isNull, 0).otherwise(lag("open", 1).over(dateWindow)), 4)
+      )
+      .withColumn("open_difference_daily_percentage",
+        round({
+          val lagval = when(lag("open", 5).over(dateWindow).isNull, 0).otherwise(lag("open", 1).over(dateWindow));
+          (($"open" - lagval)/lagval)*100
+        }, 4)
+      )
       .withColumn("close_difference_daily",
-        round($"close" - when(lag("close", 1).over(dateWindow).isNull, 0).otherwise(lag("close", 1).over(dateWindow)), 4))
+        round($"close" - when(lag("close", 1).over(dateWindow).isNull, 0).otherwise(lag("close", 1).over(dateWindow)), 4)
+      )
+      .withColumn("close_difference_daily_percentage",
+        round({
+          val lagval = when(lag("close", 1).over(dateWindow).isNull, 0).otherwise(lag("close", 1).over(dateWindow));
+          (($"close" - lagval)/lagval)*100
+        }, 4)
+      )
       .withColumn("low_difference_daily",
-        round($"low" - when(lag("low", 1).over(dateWindow).isNull, 0).otherwise(lag("low", 1).over(dateWindow)), 4))
+        round($"low" - when(lag("low", 1).over(dateWindow).isNull, 0).otherwise(lag("low", 1).over(dateWindow)), 4)
+      )
+      .withColumn("low_difference_daily_percentage",
+        round({
+          val lagval = when(lag("low", 1).over(dateWindow).isNull, 0).otherwise(lag("low", 1).over(dateWindow));
+          (($"low" - lagval)/lagval)*100
+        }, 4)
+      )
       .withColumn("high_difference_daily",
-        round($"high" - when(lag("high", 1).over(dateWindow).isNull, 0).otherwise(lag("high", 1).over(dateWindow)), 4))
+        round($"high" - when(lag("high", 1).over(dateWindow).isNull, 0).otherwise(lag("high", 1).over(dateWindow)), 4)
+      )
+      .withColumn("high_difference_daily_percentage",
+        round({
+          val lagval = when(lag("high", 1).over(dateWindow).isNull, 0).otherwise(lag("high", 1).over(dateWindow));
+          (($"high" - lagval)/lagval)*100
+        }, 4)
+      )
+      //  weekly differences
       .withColumn("open_difference_weekly",
-        round($"open" - when(lag("open", 7).over(dateWindow).isNull, 0).otherwise(lag("open", 7).over(dateWindow)), 4))
+        round($"open" - when(lag("open", 5).over(dateWindow).isNull, 0).otherwise(lag("open", 5).over(dateWindow)), 4)
+      )
+      .withColumn("open_difference_weekly_percentage",
+        round({
+          val lagval = when(lag("open", 5).over(dateWindow).isNull, 0).otherwise(lag("open", 5).over(dateWindow));
+          (($"open" - lagval)/lagval)*100
+        }, 4)
+      )
       .withColumn("close_difference_weekly",
-        round($"close" - when(lag("close", 7).over(dateWindow).isNull, 0).otherwise(lag("close", 7).over(dateWindow)), 4))
+        round($"close" - when(lag("close", 5).over(dateWindow).isNull, 0).otherwise(lag("close", 5).over(dateWindow)), 4)
+      )
+      .withColumn("close_difference_weekly_percentage",
+        round({
+          val lagval = when(lag("close", 5).over(dateWindow).isNull, 0).otherwise(lag("close", 5).over(dateWindow));
+          (($"close" - lagval)/lagval)*100
+        }, 4)
+      )
       .withColumn("low_difference_weekly",
-        round($"low" - when(lag("low", 7).over(dateWindow).isNull, 0).otherwise(lag("low", 7).over(dateWindow)), 4))
+        round($"low" - when(lag("low", 5).over(dateWindow).isNull, 0).otherwise(lag("low", 5).over(dateWindow)), 4)
+      )
+      .withColumn("low_difference_weekly_percentage",
+        round({
+          val lagval = when(lag("low", 5).over(dateWindow).isNull, 0).otherwise(lag("low", 5).over(dateWindow));
+          (($"low" - lagval)/lagval)*100
+        }, 4)
+      )
       .withColumn("high_difference_weekly",
-        round($"high" - when(lag("high", 7).over(dateWindow).isNull, 0).otherwise(lag("high", 7).over(dateWindow)), 4))
+        round($"high" - when(lag("high", 5).over(dateWindow).isNull, 0).otherwise(lag("high", 5).over(dateWindow)), 4)
+      )
+      .withColumn("high_difference_weekly_percentage",
+           round({
+             val lagval = when(lag("high", 5).over(dateWindow).isNull, 0).otherwise(lag("high", 5).over(dateWindow));
+             (($"high" - lagval)/lagval)*100
+            }, 4)
+      )
+
       .select($"date", $"volume",
-        $"open", $"open_difference_daily", $"open_difference_weekly",
-        $"close", $"close_difference_daily", $"close_difference_weekly",
-        $"low", $"low_difference_daily", $"low_difference_weekly",
-        $"high", $"high_difference_daily", $"high_difference_weekly")
+        $"open", $"open_difference_daily", $"open_difference_daily_percentage",
+        $"open_difference_weekly", $"open_difference_weekly_percentage",
+        $"close", $"close_difference_daily", $"close_difference_daily_percentage",
+        $"close_difference_weekly", $"close_difference_weekly_percentage",
+        $"low", $"low_difference_daily", $"low_difference_daily_percentage",
+        $"low_difference_weekly", $"low_difference_weekly_percentage",
+        $"high", $"high_difference_daily", $"high_difference_daily_percentage",
+        $"high_difference_weekly", $"high_difference_weekly_percentage")
       .coalesce(1).write.option("header", "true").option("sep", ",").mode("overwrite").csv(outfile);
   }
 }
