@@ -4,6 +4,7 @@
 ## 15 minute maximum reply records is 1500
 ## most of these dont get close to that twitter appears to have some convoluted metrics for 
 ## how many tweets to archive for which user
+## requires you have an environment variable TWITTER_BEARER for your bearer key
 
 usernames=( tim_cook officialmcafee jeffbezos jack eholmes2003 elonmusk )
 for user in ${usernames[*]};

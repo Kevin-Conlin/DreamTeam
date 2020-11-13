@@ -22,7 +22,7 @@ object sqlDriver {
     outfile += "_differences";
     val spark = SparkSession.builder()
       .appName("spark sql tryout")
-      .master("local[6]")
+      .master("local[*]")
       .getOrCreate()
     spark.sparkContext.setLogLevel("WARN");
     import spark.implicits._;
