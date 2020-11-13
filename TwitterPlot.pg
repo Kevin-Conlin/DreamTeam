@@ -1,0 +1,10 @@
+set datafile separator ","
+
+set xtics format '%Y/%m/%d' time
+
+plot "nasdaq-data-differences/ApplePrices_differences.csv" every ::3 using (timecolumn(1, '%Y/%m/%d')):8 with lines,\
+    'tweet-stock-tables/CookSpecTweets.csv' u (timecolumn(2,'%Y-%m-%d')):(-50):(0):(250) with vectors nohead,\
+    'twitter-data/tim_cook.csv' u (timecolumn(2,'%a %b %d %H:%M:%S %a %Y')):(0):(0):(100) with vectors nohead
+
+
+

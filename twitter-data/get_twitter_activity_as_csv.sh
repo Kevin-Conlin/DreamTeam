@@ -1,5 +1,6 @@
 ##  gets 1500 most recent tweets from various twitter acounts and places them into csv files
-##  or as many as twitter will give me 
+##  or as many as twitter will give us twitter appears to have an inconsistent metric
+##  for how many tweets to archive for a given user
 ##  csv format :    ID, TIME_CREATED, NUM_RETWEETS, NUM_FAVORITES, TEXT
 ## 15 minute maximum reply records is 1500
 ## most of these dont get close to that twitter appears to have some convoluted metrics for 
@@ -68,4 +69,9 @@ do
                 echo "$ID,$CREATED_AT,$RETWEETS,$FAVORITES,$TEXT" >> $user.csv
             fi
     done
+done
+
+files=`ls *.csv`
+for i in $files;do
+    vim -c "%s/ +0000 / /g | wq" $i
 done
