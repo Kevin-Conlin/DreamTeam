@@ -1,8 +1,6 @@
 package nasdaqprices
-import org.apache.spark.sql.functions.{col, element_at, regexp_replace, substring, unix_timestamp}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{SparkSession, functions}
-
 
 object Runner {
     def main (args: Array[String]) = {
@@ -20,7 +18,7 @@ object Runner {
             .config(conf)
             .getOrCreate()
 
-        val inputNasdaqData = "TeslaNasdaqPrices.csv"
+        val inputNasdaqData = "TeslaPrices.csv"
         val inputJSONData = "json.json"
         val inputCSVConvData = "out.csv"
 
@@ -54,18 +52,23 @@ object Runner {
 
             // USED TO TRANSLATE TWITTER TIME TO MM/DD/YYYY"
             spark.sql("set spark.sql.legacy.timeParserPolicy=LEGACY")
-           val df3 = spark.sql("SELECT (from_unixtime(unix_timestamp(created_at, 'EEE MMM dd HH:mm:ss ZZZZZ yyyy'), " +
-               "'yyyy/MM/dd')) AS new_time, retweet_count AS Retweets, favorite_count AS Favorites FROM tweets")
-           df3.createOrReplaceTempView("clean_tweets")
+            val df3 = spark.sql("SELECT (from_unixtime(unix_timestamp(created_at, 'EEE MMM dd HH:mm:ss ZZZZZ yyyy'), " +
+                "'yyyy/MM/dd')) AS new_time, retweet_count AS Retweets, favorite_count AS Favorites FROM tweets")
+            df3.createOrReplaceTempView("clean_tweets")
 
            // INNER JOIN with Clean Tweets & Nasdaq Prices
-           val df4 = spark.read.csv("TeslaNasdaqPrices.csv")
+           val df4 = spark.read.csv("TeslaPrices.csv")
            df4.createOrReplaceTempView("clean_prices")
-           spark.sql("SELECT clean_tweets.new_time AS date, clean_prices._c1 AS Closing, " +
-               "clean_tweets.Retweets AS Retweets FROM clean_tweets INNER JOIN clean_prices ON" +
-               " clean_tweets.new_time = clean_prices._c0 limit 10").show()
+           spark.sql("SELECT clean_tweets.new_time AS Date, clean_prices._c1 AS Closing, " +
+                "clean_tweets.Retweets AS Retweets FROM clean_tweets INNER JOIN clean_prices ON" +
+                " clean_tweets.new_time = clean_prices._c0 limit 10").show()
 
-            
+            val df5 = spark.sql("SELECT unix_timestamp(created_at, 'EEE MMM dd HH:mm:ss ZZZZZ yyyy')" +
+                "AS new_time, retweet_count AS Retweets, favorite_count AS Favorites FROM tweets")
+                df5.createOrReplaceTempView("day_before_after")
+                df5.select(functions.col("new_time") - 86400).as("day_before").show()
+
+
         }
     }
 }
