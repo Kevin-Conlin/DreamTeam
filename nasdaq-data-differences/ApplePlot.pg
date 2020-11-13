@@ -1,0 +1,7 @@
+set datafile separator ","
+
+set xdata time
+set timefmt "%Y/%m/%d"
+
+plot "ApplePrices_differences.csv" every ::3 using 1:8 with lines
+
