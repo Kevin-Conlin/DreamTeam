@@ -24,8 +24,8 @@ object Runner {
             .getOrCreate()
 
         //CSV files used
-        val inputNasdaqData = "TwitterPrices.csv"
-        val inputTweetData = "DorseySpecTweets.csv"
+        val inputNasdaqData = "../nasdaq-data/TeslaPrices.csv"
+        val inputTweetData = "ElonSpecTweets.csv"
 
         tweetStockTable(sc, inputNasdaqData, inputTweetData)
 
@@ -61,13 +61,17 @@ object Runner {
           df3.createOrReplaceTempView("stock")
 
           //Joins tweet and stock views to create a DataFrame containing relevant columns
-          val df4 = spark.sql("SELECT clean_tweets.date AS Date, clean_tweets.text AS Text, " +
+          val df4 = spark.sql("SELECT OUTER.date AS Date, OUTER.text AS Text, " +
             "ROUND(stock.close, 2) AS Closing_Price, stock.close_difference_daily AS Percent_Change_Prev_Day, " +
             "stock.close_difference_weekly AS Percent_Change_Prev_Week,  stock.close_difference_next_day AS Percent_Change_Following_Day, " +
             "stock.close_difference_next_week AS Percent_Change_Following_Week, " + "" +
-            "ROUND((clean_tweets.favorites/clean_tweets.retweets), 2) AS Fave_to_Retweet_Ratio  " +
-            "FROM clean_tweets INNER JOIN stock ON clean_tweets.date = stock.date ORDER BY Fave_to_Retweet_Ratio")
-          df4.show()
+            "ROUND((OUTER.favorites/OUTER.retweets), 2) AS Fave_to_Retweet_Ratio  " +
+            "FROM clean_tweets OUTER LEFT JOIN stock ON OUTER.date = stock.date ORDER BY Fave_to_Retweet_Ratio")
+
+//          val df4 = spark.sql("SELECT date AS Date, id AS ID, " +
+//            "ROUND((favorites/retweets), 2) AS Fave_to_Retweet_Ratio " +
+//            "FROM clean_tweets ORDER BY date ASC")
+            df4.show(true)
 
         }
     }
