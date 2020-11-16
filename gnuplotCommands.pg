@@ -1,0 +1,38 @@
+set datafile separator ","
+
+set xtics format '%Y/%m/%d' time
+
+set title "Bezos' Tweets overlayed on Amazon's Stock"	
+plot "datasets/AmazonPrices_differences.csv" every ::3 using (timecolumn(1, '%Y/%m/%d')):8 with lines,\
+'datasets/BezosSpecTweets.csv' u (timecolumn(2,'%Y-%m-%d')):(-50):(0):(5000) with vectors nohead,\
+'datasets/jeffbezos.csv' u (timecolumn(2,'%a %b %d %H:%M:%S %a %Y')):(0):(0):(800) with vectors nohead,\
+'datasets/BezosSpecTweets.csv' u (timecolumn(2,'%Y-%m-%d')):(1000):5 with labels hypertext	
+
+	
+set title "Blankfein's Tweets overlayed on GoldmanSachs' Stock"
+plot "datasets/GoldmanPrice_differences.csv" every ::3 using (timecolumn(1, '%Y/%m/%d')):8 with lines,\
+'datasets/BlankfeinSpecTweets.csv' u (timecolumn(2,'%m/%d/%Y')):(-50):(0):(500) with vectors nohead,\
+'datasets/lloydblankfein.csv' u (timecolumn(2,'%a %b %d %H:%M:%S %a %Y')):(0):(0):(100) with vectors nohead,\
+'datasets/BlankfeinSpecTweets.csv' u (timecolumn(2,'%m/%d/%Y')):(300):5 with labels hypertext
+	
+
+set title "Cook's Tweets overlayed on Apple's Stock"	
+plot "datasets/ApplePrices_differences.csv" every ::3 using (timecolumn(1, '%Y/%m/%d')):8 with lines,\
+'datasets/CookSpecTweets.csv' u (timecolumn(2,'%Y-%m-%d')):(-50):(0):(500) with vectors nohead,\
+'datasets/tim_cook.csv' u (timecolumn(2,'%a %b %d %H:%M:%S %a %Y')):(0):(0):(20) with vectors nohead,\
+'datasets/CookSpecTweets.csv' u (timecolumn(2,'%Y-%m-%d')):(100):5 with labels hypertext	
+
+
+set title "Dorsey's Tweets overlayed on Twitter's Stock"	
+plot "datasets/twitterPrices_differences.csv" every ::3 using (timecolumn(1, '%Y/%m/%d')):8 with lines,\
+'datasets/DorseySpecTweets.csv' u (timecolumn(2,'%Y-%m-%d')):(-50):(0):(200) with vectors nohead,\
+'datasets/jack.csv' u (timecolumn(2,'%a %b %d %H:%M:%S %a %Y')):(0):(0):(20) with vectors nohead,\
+'datasets/DorseySpecTweets.csv' u (timecolumn(2,'%Y-%m-%d')):(60):5 with labels hypertext
+	
+	
+set title "Elon's Tweets overlayed on Tesla's Stock"	
+plot "datasets/TeslaPrices_differences.csv" every ::3 using (timecolumn(1, '%Y/%m/%d')):8 with lines,\
+'datasets/ElonSpecTweets.csv' u (timecolumn(2,'%Y-%m-%d')):(-50):(0):(500) with vectors nohead,\
+'datasets/elonmusk.csv' u (timecolumn(2,'%a %b %d %H:%M:%S %a %Y')):(0):(0):(30) with vectors nohead,\
+'datasets/ElonSpecTweets.csv' u (timecolumn(2,'%Y-%m-%d')):(100):5 with labels hypertext	
+	
