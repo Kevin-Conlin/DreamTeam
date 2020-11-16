@@ -102,7 +102,13 @@ object sqlDriver {
              (($"high" - lagval)/lagval)*100
             }, 4)
       )
-
+      .withColumn("close_trend", {
+        when(lag("close", 1).over(dateWindow).isNotNull, {
+          var days = 1;
+          when(lag("close", 1).over(dateWindow) > $"close", days).otherwise({
+          });
+        }).otherwise(0)
+      })
       .select($"date", $"volume",
         $"open", $"open_difference_daily", $"open_difference_daily_percentage",
         $"open_difference_weekly", $"open_difference_weekly_percentage",
@@ -111,8 +117,8 @@ object sqlDriver {
         $"low", $"low_difference_daily", $"low_difference_daily_percentage",
         $"low_difference_weekly", $"low_difference_weekly_percentage",
         $"high", $"high_difference_daily", $"high_difference_daily_percentage",
-        $"high_difference_weekly", $"high_difference_weekly_percentage")
-      //.coalesce(1).write.option("header", "true").option("sep", ",").mode("overwrite").csv(outfile);
-      .show(10)
+        $"high_difference_weekly", $"high_difference_weekly_percentage",
+        $"close_trend")
+      .coalesce(1).write.option("header", "true").option("sep", ",").mode("overwrite").csv(outfile);
   }
 }
