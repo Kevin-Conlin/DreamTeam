@@ -1,5 +1,6 @@
 ##  gets 1500 most recent tweets from various twitter acounts and places them into csv files
-##  or as many as twitter will give me 
+##  or as many as twitter will give us twitter appears to have an inconsistent metric
+##  for how many tweets to archive for a given user
 ##  csv format :    ID, TIME_CREATED, NUM_RETWEETS, NUM_FAVORITES, TEXT
 ## 15 minute maximum reply records is 1500
 ## most of these dont get close to that twitter appears to have some convoluted metrics for 
@@ -17,7 +18,8 @@ do
      -H "Content-type: application/json" \
      -H "Accept: application/json"`
     OLDEST_ID=`echo $JSON | jshon -e 199 -e id`
-    for i in `seq 0 199`;
+    N_RESULTS=`echo $JSON | jshon -l`
+    for i in `seq 0 ${N_RESULTS-1}`;
     do
             CREATED_AT=`echo $JSON | jshon -e $i -e created_at`
             ID=`echo $JSON | jshon -e $i -e id_str`
@@ -27,6 +29,7 @@ do
             if [ ! -z "$ID" -a ! -z "$CREATED_AT" ]; then
                 echo "$ID,$CREATED_AT,$RETWEETS,$FAVORITES,$TEXT" >> $user.csv
             fi
+    echo $user
     done
 #   201-400, 401-600, 601-800, 801-1000, 1001-1200, 1201-1400
     for p in `seq 1 6`;
@@ -38,7 +41,8 @@ do
          -H "Content-type: application/json" \
          -H "Accept: application/json"`
         OLDEST_ID=`echo $JSON | jshon -e 199 -e id`
-        for i in `seq 0 199`;
+        N_RESULTS=`echo $JSON | jshon -l`
+        for i in `seq 0 ${N_RESULTS-1}`;
         do
                 CREATED_AT=`echo $JSON | jshon -e $i -e created_at`
                 ID=`echo $JSON | jshon -e $i -e id_str`
@@ -50,6 +54,7 @@ do
                 fi
         done
     done 
+    echo $user
 #   last 100 tweets
     JSON=`curl \
      --get "https://api.twitter.com/1.1/statuses/user_timeline.json" \
@@ -57,7 +62,8 @@ do
      --header "Authorization: Bearer $TWITTER_BEARER" \
      -H "Content-type: application/json" \
      -H "Accept: application/json"`
-    for i in `seq 0 99`;
+    N_RESULTS=`echo $JSON | jshon -l`
+    for i in `seq 0 ${N_RESULTS-1}`;
     do
             CREATED_AT=`echo $JSON | jshon -e $i -e created_at`
             ID=`echo $JSON | jshon -e $i -e id_str`
@@ -68,4 +74,7 @@ do
                 echo "$ID,$CREATED_AT,$RETWEETS,$FAVORITES,$TEXT" >> $user.csv
             fi
     done
+    echo $user
+    vim -c "%s/ +0000 / /g | wq" $user.csv
 done
+

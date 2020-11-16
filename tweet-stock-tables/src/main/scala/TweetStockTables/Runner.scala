@@ -40,7 +40,7 @@ object Runner {
           //Translates Twitter data timestamp to appropriate format
           //for joining with Nasdaq data
           spark.sql("set spark.sql.legacy.timeParserPolicy=LEGACY")
-          val df2 = spark.sql("SELECT _c0 AS id, (from_unixtime(unix_timestamp(_c1, 'yyyy-MM-dd'), " +
+          val df2 = spark.sql("SELECT _c0 AS id, (from_unixtime(unix_timestamp(_c1, 'yyyy/MM/dd'), " +
             "'yyyy/MM/dd')) AS date, _c2 AS retweets, _c3 AS favorites, _c4 AS text FROM tweets")
           df2.createOrReplaceTempView("clean_tweets")
 
