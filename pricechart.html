@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js"></script>
+</head>
+
+<body>
+    <div class="chart-container" style="position: relative; height:20vh; width:60vw">
+        <canvas id="chart" width="400" height="400"></canvas>
+    </div>
+</body>
+</html>
+
+<script>
+    var file = 'http://64.227.8.168/TeslaPrices.csv'
+    d3.csv(file)
+        .then(makeChart);
+
+    function makeChart(prices){
+        var pricesLabels = prices.map(function(d) {return d.date});
+        var dailyData = prices.map(function(d) {return d.close});
+        var chartTitle = 'enter title for nasdaq chart here'
+
+        var chart = new Chart('chart', {
+        type: 'line',
+        reponsive: true,
+            data: {
+            labels: pricesLabels.reverse(),
+            datasets: [{data: dailyData.reverse(),
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',}]
+            },
+        options: {
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: chartTitle
+            },           
+            scales:{
+                xAxes: [{
+                    ticks: {
+                        reverse: true,
+                        max: 20,
+                        min: 1,
+                        stepSize: 1.5,
+                        maxTicksLimit: 20
+                    }
+                }]
+            }
+        }
+        });
+
+    }
+</script>    
+
