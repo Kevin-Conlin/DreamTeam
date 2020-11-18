@@ -8,10 +8,14 @@ Project Outline:
 
 Technologies Used:
 - Apache Spark
+- Linux Apache Server
 - Spark SQL
-- YARN
-- HDFS and/or S3
-- BASH shell scripting
-- GNU plot
+- BASH Shell Scripting
+- HTML / Bootstrap 4
+- jQuery / JavaScript
+- Chart.js
+- JSHON
+- GNUPlot
 - Scala 2.12.10
 - Git + GitHub
+- Crontabs
