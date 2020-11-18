@@ -27,8 +27,27 @@ object Runner {
         val inputNasdaqData = "../nasdaq-data/TeslaPrices.csv"
         val inputTweetData = "ElonSpecTweets.csv"
 
+      /*
         tweetStockTable(sc, inputNasdaqData, inputTweetData)
+        tweetRetweetFavoriteRatio_csv(sc, "../twitter-data/elonmusk.csv", "elonmusk_ratio.csv");
+        tweetRetweetFavoriteRatio_csv(sc, "../twitter-data/tim_cook.csv", "tim_cook_ratio.csv");
+        tweetRetweetFavoriteRatio_csv(sc, "../twitter-data/jeffbezos.csv", "jeffbezos_ratio.csv");
+        tweetRetweetFavoriteRatio_csv(sc, "../twitter-data/jack.csv", "jack_ratio.csv");
+      */
+        tweetRetweetFavoriteRatio_csv(sc, "../twitter-data/lloydblankfein.csv", "lloydblankfein_ratio.csv");
 
+      def tweetRetweetFavoriteRatio_csv(context: SparkContext, infile: String, outfile: String) = {
+        import spark.implicits._
+        val df = spark.read.csv(infile)
+          .withColumnRenamed("_c0", "id")
+          .withColumnRenamed("_c1", "time")
+          .withColumnRenamed("_c2", "retweets")
+          .withColumnRenamed("_c3", "favorites")
+          .withColumnRenamed( "_c4", "text")
+          .withColumn( "favorites_to_retweets", $"favorites" / $"retweets" )
+          .select( $"id", $"time", $"favorites_to_retweets")
+          .coalesce(1).write.option("header", "true").option("sep", ",").mode("overwrite").csv(outfile);
+      }
         def tweetStockTable(context: SparkContext, stockData: String, tweetData: String) = {
 
           import spark.implicits._

@@ -7,7 +7,8 @@
 ## how many tweets to archive for which user
 ## requires you have an environment variable TWITTER_BEARER for your bearer key
 
-usernames=( tim_cook officialmcafee jeffbezos jack eholmes2003 elonmusk )
+#usernames=( tim_cook  jeffbezos jack elonmusk lloydblankfein)
+usernames=( lloydblankfein)
 for user in ${usernames[*]};
 do
 #   first 200 tweets
@@ -29,7 +30,6 @@ do
             if [ ! -z "$ID" -a ! -z "$CREATED_AT" ]; then
                 echo "$ID,$CREATED_AT,$RETWEETS,$FAVORITES,$TEXT" >> $user.csv
             fi
-    echo $user
     done
 #   201-400, 401-600, 601-800, 801-1000, 1001-1200, 1201-1400
     for p in `seq 1 6`;
@@ -74,7 +74,6 @@ do
                 echo "$ID,$CREATED_AT,$RETWEETS,$FAVORITES,$TEXT" >> $user.csv
             fi
     done
-    echo $user
     vim -c "%s/ +0000 / /g | wq" $user.csv
 done
 
